@@ -1,8 +1,10 @@
-import { createPool, sql } from '@vercel/postgres';
-import { POSTGRES_URL } from '$env/static/private';
+import { createPool } from '@vercel/postgres';
+import { env } from '$env/dynamic/private';
+const POSTGRES_URL = env.POSTGRES_URL;
 
 export async function load() {
   const db = createPool({ connectionString: POSTGRES_URL });
+
 
   try {
     const { rows: names } = await db.query('SELECT * FROM names');
@@ -102,7 +104,7 @@ export const actions = {
       const email = data.get('email');
       const name = data.get('name');
 
-      await client.sql`
+      const updateUser=await client.sql`
         UPDATE names
         SET email = ${email}
         WHERE name = ${name};`;
